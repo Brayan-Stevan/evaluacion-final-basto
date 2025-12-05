@@ -4,26 +4,33 @@ require_once("../../database/connection.php");
 $db = new Database;
 $con = $db->conectar();
 
-$id_admin = $_SESSION['id_user'];
+$id_cliente = $_SESSION['id_user'];
 
-// Obtener datos del admin
 $sql = $con->prepare("SELECT Dinero FROM user WHERE id_user = ?");
-$sql->execute([$id_admin]);
-$admin = $sql->fetch(PDO::FETCH_ASSOC);
+$sql->execute([$id_cliente]);
+$cliente = $sql->fetch(PDO::FETCH_ASSOC);
 
 if (isset($_POST['retirar'])) {
     $monto = floatval($_POST['monto']);
 
-    if ($monto > 0 && $monto <= $admin['Dinero']) {
+    // Validar monto
+    if ($monto > 0 && $monto <= $cliente['Dinero']) {
 
-        // Restar dinero
+        // RESTAR DINERO AL CLIENTE
         $sql = $con->prepare("UPDATE user SET Dinero = Dinero - ? WHERE id_user = ?");
-        $sql->execute([$monto, $id_admin]);
+        $sql->execute([$monto, $id_cliente]);
+
+        // REGISTRAR EN MOVIMIENTOS (monto NEGATIVO)
+        $mov = $con->prepare("
+            INSERT INTO movimientos (id_emisor, id_receptor, monto)
+            VALUES (?, ?, ?)
+        ");
+        $mov->execute([$id_cliente, $id_cliente, -$monto]);
 
         header("Location: index.php?success=1");
         exit();
     } else {
-        $error = "Monto inválido o insuficiente.";
+        $error = "Monto inválido o saldo insuficiente.";
     }
 }
 ?>
@@ -45,7 +52,7 @@ if (isset($_POST['retirar'])) {
 
         <div class="mb-3">
             <label class="form-label">Saldo actual:</label>
-            <input type="text" class="form-control" value="$<?= number_format($admin['Dinero'], 2) ?>" disabled>
+            <input type="text" class="form-control" value="$<?= number_format($cliente['Dinero'], 2) ?>" disabled>
         </div>
 
         <div class="mb-3">

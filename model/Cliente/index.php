@@ -6,20 +6,41 @@ $con = $db->conectar();
 
 $id_cliente  = $_SESSION['id_user'];
 
+
+$sql = $con->prepare("SELECT id_user, nombre, apellido, Dinero FROM user WHERE id_user = ?");
+$sql->execute([$id_cliente]);
+$cliente = $sql->fetch(PDO::FETCH_ASSOC);
+
 // Obtener datos del cliente
 $sqlA = $con->prepare("SELECT Dinero FROM user WHERE id_user = ?");
 $sqlA->execute([$id_cliente]);
 $cliente = $sqlA->fetch(PDO::FETCH_ASSOC);
 
-$sql = $con->prepare("SELECT id_user, nombre, apellido, Dinero FROM user WHERE id_user = ?");
-$sql->execute([$id_cliente]);
-$clie = $sql->fetch(PDO::FETCH_ASSOC);
+$sql = $con->prepare(" SELECT 
+        movimientos.id_movimiento,
+        movimientos.monto,
+        movimientos.fecha,
 
-// Consultar usuarios tipo cliente (tipo = 2)
+        user.nombre AS nombre_emisor,
+        user.apellido AS apellido_emisor,
+
+        user2.nombre AS nombre_receptor,
+        user2.apellido AS apellido_receptor
+
+        FROM movimientos
+        INNER JOIN user ON movimientos.id_emisor = user.id_user
+        INNER JOIN user AS user2 ON movimientos.id_receptor = user2.id_user
+
+        WHERE movimientos.id_emisor = ? OR movimientos.id_receptor = ?
+        ORDER BY movimientos.fecha DESC
+");
+$sql->execute([$id_cliente, $id_cliente]);
+$clie = $sql->fetchAll(PDO::FETCH_ASSOC);
+
 
 if (isset($_POST['cerrar'])) {
-  session_unset();   // elimina las variables de sesión
-  session_destroy(); // destruye la sesión
+  session_unset();   
+  session_destroy();
   header("Location: ../../index.php");
   exit();
 }
@@ -60,18 +81,23 @@ if (isset($_POST['cerrar'])) {
                 <table class="table table-striped table-hover text-center">
                     <thead class="table-dark">
                         <tr>
-                            <th>Dinero</th>
-                            <th>Acciones</th>
+                            <th>ID-Movimiento</th>
+                            <th>Monto</th>
+                            <th>Emisor</th>
+                            <th>Receptor</th>
+                            <th>Apellido</th>
+                            <th>Fecha</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <?php foreach ($cliente as $cli): ?>
+                        <?php foreach ($clie as $mov): ?>
                             <tr>
-                                <td><?= $cli['Dinero'] ?></td>
-                                <td>
-                                    <a href="transaccion_cliente.php?id=<?= $cli['id_user'] ?>" class="btn btn-success btn-sm">Transaccion</a>
-                                </td>
+                                <td><?= $mov['id_movimiento'] ?></td>
+                                <td>$<?= number_format($mov['monto'], 2) ?></td>
+                                <td><?= $mov['nombre_emisor'] ?></td>
+                                <td><?= $mov['id_receptor'] ?></td>
+                                <td><?= $mov['fecha'] ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
