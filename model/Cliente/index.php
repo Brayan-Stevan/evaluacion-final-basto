@@ -7,14 +7,15 @@ $con = $db->conectar();
 $id_cliente  = $_SESSION['id_user'];
 
 
-$sql = $con->prepare("SELECT id_user, nombre, apellido, Dinero FROM user WHERE id_user = ?");
+$sql = $con->prepare("SELECT user.id_user, user.nombre, user.apellido, user.Dinero, tip_user.tipo_user
+    FROM user
+    INNER JOIN tip_user ON user.id_tipo_user = tip_user.id_tipo_user
+    WHERE user.id_user = ?
+");
 $sql->execute([$id_cliente]);
 $clientedatos = $sql->fetch(PDO::FETCH_ASSOC);
 
 
-$sqlA = $con->prepare("SELECT Dinero FROM user WHERE id_user = ?");
-$sqlA->execute([$id_cliente]);
-$clientedinero = $sqlA->fetch(PDO::FETCH_ASSOC);
 
 $sql = $con->prepare(" SELECT 
         movimientos.id_movimiento,
@@ -67,13 +68,13 @@ if (isset($_POST['cerrar'])) {
                 <?php echo $clientedatos['apellido']; ?>
             </span>
             <span class="fw-bold">Admin</span>
-            <span class="badge bg-success ms-2">$<?= number_format($clientedinero['Dinero'], 2) ?></span>
+            <span class="badge bg-success ms-2">$<?= number_format($clientedatos['Dinero'], 2) ?></span>
         </div>
     </nav>
 
     <div class="container mt-5">
 
-        <h2 class="mb-4 text-center fw-bold">NEQUI - MOVIMIENTOS DE <?php echo $clientedatos['nombre']; ?> </h2>
+        <h2 class="mb-4 text-center fw-bold">NEQUI - MOVIMIENTOS DE <?php echo $clientedatos['nombre']; ?> - Tu Rol Es <?php echo $clientedatos['tipo_user']; ?> </h2>
 
         <div class="card shadow">
             <div class="card-body">

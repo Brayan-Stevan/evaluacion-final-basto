@@ -63,7 +63,7 @@ if (isset($_POST['cerrar'])) {
 
     <div class="container mt-5">
 
-        <h2 class="mb-4 text-center fw-bold">NEQUI - Bienevenido <?php echo $admindatos['nombre']; ?></h2>
+        <h2 class="mb-4 text-center fw-bold">NEQUI - Bienevenido <?php echo $admindatos['nombre']; ?> - Tu Rol Es <?php echo $admindatos['tipo_user']; ?> </h2>
 
         <div class="card shadow">
             <div class="card-body">
