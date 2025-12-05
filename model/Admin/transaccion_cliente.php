@@ -4,7 +4,7 @@ require_once("../../database/connection.php");
 $db = new Database;
 $con = $db->conectar();
 
-$id_receptor = $_GET['id'] ?? null;
+$id_receptor = $_GET['id'];
 
 if (!$id_receptor) {
     die("ID no válido");

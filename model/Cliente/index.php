@@ -9,12 +9,12 @@ $id_cliente  = $_SESSION['id_user'];
 
 $sql = $con->prepare("SELECT id_user, nombre, apellido, Dinero FROM user WHERE id_user = ?");
 $sql->execute([$id_cliente]);
-$cliente = $sql->fetch(PDO::FETCH_ASSOC);
+$clientedatos = $sql->fetch(PDO::FETCH_ASSOC);
 
-// Obtener datos del cliente
+
 $sqlA = $con->prepare("SELECT Dinero FROM user WHERE id_user = ?");
 $sqlA->execute([$id_cliente]);
-$cliente = $sqlA->fetch(PDO::FETCH_ASSOC);
+$clientedinero = $sqlA->fetch(PDO::FETCH_ASSOC);
 
 $sql = $con->prepare(" SELECT 
         movimientos.id_movimiento,
@@ -64,16 +64,16 @@ if (isset($_POST['cerrar'])) {
         <a href="retirar_admin.php?id=<?= $id_cliente ?>" class="btn btn-warning btn-sm">Retirar</a>
         <a href="consignar_admin.php?id=<?= $id_cliente ?>" class="btn btn-warning btn-sm">Consignar</a>
             <span class="badge bg-primary ms-2">
-                <?= $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] ?>
+                <?php echo $clientedatos['nombre']; ?>
             </span>
             <span class="fw-bold">Admin</span>
-            <span class="badge bg-success ms-2">$<?= number_format($cliente['Dinero'], 2) ?></span>
+            <span class="badge bg-success ms-2">$<?= number_format($clientedinero['Dinero'], 2) ?></span>
         </div>
     </nav>
 
     <div class="container mt-5">
 
-        <h2 class="mb-4 text-center fw-bold">NEQUI</h2>
+        <h2 class="mb-4 text-center fw-bold">NEQUI - MOVIMIENTOS DE <?php echo $clientedatos['nombre']; ?> </h2>
 
         <div class="card shadow">
             <div class="card-body">
@@ -82,10 +82,9 @@ if (isset($_POST['cerrar'])) {
                     <thead class="table-dark">
                         <tr>
                             <th>ID-Movimiento</th>
+                            <th>De</th>
+                            <th>Para</th>
                             <th>Monto</th>
-                            <th>Emisor</th>
-                            <th>Receptor</th>
-                            <th>Apellido</th>
                             <th>Fecha</th>
                         </tr>
                     </thead>
@@ -94,9 +93,9 @@ if (isset($_POST['cerrar'])) {
                         <?php foreach ($clie as $mov): ?>
                             <tr>
                                 <td><?= $mov['id_movimiento'] ?></td>
-                                <td>$<?= number_format($mov['monto'], 2) ?></td>
                                 <td><?= $mov['nombre_emisor'] ?></td>
-                                <td><?= $mov['id_receptor'] ?></td>
+                                <td><?= $mov['nombre_receptor'] ?></td>
+                                <td>$<?= number_format($mov['monto'], 2) ?></td>
                                 <td><?= $mov['fecha'] ?></td>
                             </tr>
                         <?php endforeach; ?>
