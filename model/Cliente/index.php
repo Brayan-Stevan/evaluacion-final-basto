@@ -4,7 +4,7 @@ require_once("../../database/connection.php");
 $db = new Database;
 $con = $db->conectar();
 
-$id_cliente   = $_SESSION['id_user'];
+$id_cliente  = $_SESSION['id_user'];
 
 // Obtener datos del cliente
 $sqlA = $con->prepare("SELECT Dinero FROM user WHERE id_user = ?");
@@ -40,8 +40,8 @@ if (isset($_POST['cerrar'])) {
         <form method="POST">
           <button type="submit" name="cerrar" class="jugar4 mt-1 btn btn-danger boton-custom w-100 btn-sm">Cerrar sesión</button>
         </form>
-        <a href="retirar_admin.php?id=<?= $id_admin ?>" class="btn btn-warning btn-sm">Retirar</a>
-        <a href="consignar_admin.php?id=<?= $id_admin ?>" class="btn btn-warning btn-sm">Consignar</a>
+        <a href="retirar_admin.php?id=<?= $id_cliente ?>" class="btn btn-warning btn-sm">Retirar</a>
+        <a href="consignar_admin.php?id=<?= $id_cliente ?>" class="btn btn-warning btn-sm">Consignar</a>
             <span class="badge bg-primary ms-2">
                 <?= $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] ?>
             </span>
@@ -60,10 +60,7 @@ if (isset($_POST['cerrar'])) {
                 <table class="table table-striped table-hover text-center">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Correo</th>
+                            <th>Dinero</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -71,10 +68,7 @@ if (isset($_POST['cerrar'])) {
                     <tbody>
                         <?php foreach ($cliente as $cli): ?>
                             <tr>
-                                <td><?= $cli['id_user'] ?></td>
-                                <td><?= $cli['nombre'] ?></td>
-                                <td><?= $cli['apellido'] ?></td>
-                                <td><?= $cli['correo'] ?></td>
+                                <td><?= $cli['Dinero'] ?></td>
                                 <td>
                                     <a href="transaccion_cliente.php?id=<?= $cli['id_user'] ?>" class="btn btn-success btn-sm">Transaccion</a>
                                 </td>
