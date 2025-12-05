@@ -20,11 +20,9 @@ if (isset($_POST['consignar'])) {
         $sql->execute([$monto, $id_cliente]);
 
         // REGISTRAR EN TABLA MOVIMIENTOS
-        $mov = $con->prepare("
-            INSERT INTO movimientos (id_emisor, id_receptor, monto)
-            VALUES (?, ?, ?)
-        ");
-        $mov->execute([$id_cliente, $id_cliente, $monto]);
+        $mov = $con->prepare(" INSERT INTO movimientos (id_emisor, id_receptor, monto)
+            VALUES ('$id_cliente', '$id_cliente', '$monto')");
+        $mov->execute();
 
         header("Location: index.php?success=1");
         exit();

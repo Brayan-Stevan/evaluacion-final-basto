@@ -64,7 +64,7 @@ if (isset($_POST['cerrar'])) {
         <a href="retirar_admin.php?id=<?= $id_cliente ?>" class="btn btn-warning btn-sm">Retirar</a>
         <a href="consignar_admin.php?id=<?= $id_cliente ?>" class="btn btn-warning btn-sm">Consignar</a>
             <span class="badge bg-primary ms-2">
-                <?php echo $clientedatos['nombre']; ?>
+                <?php echo $clientedatos['apellido']; ?>
             </span>
             <span class="fw-bold">Admin</span>
             <span class="badge bg-success ms-2">$<?= number_format($clientedinero['Dinero'], 2) ?></span>

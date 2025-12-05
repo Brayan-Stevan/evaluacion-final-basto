@@ -48,7 +48,7 @@ $emisor = $sql2->fetch(PDO::FETCH_ASSOC);
             <input type="hidden" name="receptor" value="<?= $id_receptor ?>">
 
             <label class="form-label">Monto a transferir</label>
-            <input type="number" name="monto" class="form-control mb-3" min="1" required>
+            <input type="number" name="monto" placeholder="Ej:20000" class="form-control mb-3" min="1" required>
 
             <button class="btn btn-primary w-100">Enviar</button>
         </form>

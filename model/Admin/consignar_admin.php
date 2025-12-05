@@ -11,19 +11,19 @@ $sql = $con->prepare("SELECT Dinero FROM user WHERE id_user = ?");
 $sql->execute([$id_admin]);
 $admin = $sql->fetch(PDO::FETCH_ASSOC);
 
-if (isset($_POST['retirar'])) {
+if (isset($_POST['consignar'])) {
     $monto = floatval($_POST['monto']);
 
-    if ($monto > 0 && $monto <= $admin['Dinero']) {
+    if ($monto > 0) {
 
-        // Restar dinero
+        // SUMAR DINERO AL CLIENTE
         $sql = $con->prepare("UPDATE user SET Dinero = Dinero + ? WHERE id_user = ?");
         $sql->execute([$monto, $id_admin]);
-
         header("Location: index.php?success=1");
         exit();
+
     } else {
-        $error = "Monto inválido o insuficiente.";
+        $error = "Monto inválido.";
     }
 }
 ?>
@@ -57,7 +57,7 @@ if (isset($_POST['retirar'])) {
             <div class="alert alert-danger"><?= $error ?></div>
         <?php endif; ?>
 
-        <button type="submit" name="retirar" class="btn btn-success w-100">Consignar</button>
+        <button type="submit" name="consignar" class="btn btn-success w-100">Consignar</button>
     </form>
 </div>
 
